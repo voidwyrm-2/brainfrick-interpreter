@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -38,28 +39,103 @@ func BFInterpreter(code string) {
 		//fmt.Println(charindex, c)
 		switch c {
 		case "+":
-			bytes[pointer] += 1
+			if bytes[pointer]+1 > 255 {
+				bytes[pointer] = 0
+			} else {
+				bytes[pointer] += 1
+			}
 			charindex += 1
 		case "-":
-			bytes[pointer] -= 1
+			if int(bytes[pointer])-1 < 0 {
+				bytes[pointer] = 255
+			} else {
+				bytes[pointer] -= 1
+			}
 			charindex += 1
 		case ">":
-			pointer += 1
+			if pointer+1 > 29999 {
+				pointer = 0
+			} else {
+				pointer += 1
+			}
 			charindex += 1
 		case "<":
-			pointer -= 1
+			if pointer-1 < 0 {
+				pointer = 29999
+			} else {
+				pointer -= 1
+			}
 			charindex += 1
 		case ".":
-			fmt.Println(string(bytes[pointer]))
+			fmt.Printf("b%v: %v('%s')\n", pointer, int(bytes[pointer]), string(bytes[pointer]))
 			charindex += 1
 		case ",":
-			fmt.Println("please input a number")
+			fmt.Println("please input a character(or do '-h' for other options)")
 			scanner := bufio.NewScanner(os.Stdin)
-			fmt.Print(":: ")
-			scanner.Scan()
-			gotten := scanner.Text()
-			if gotten != "--STOP" {
-				bytes[pointer] = byte(gotten[0])
+			for {
+				fmt.Print(":: ")
+				scanner.Scan()
+				gotten := scanner.Text()
+				if gotten == "-h" {
+					fmt.Println("do '-n <decimal>' to input a decimal literal")
+					fmt.Println("do '-b <binary>' to input a binary literal")
+					fmt.Println("do '-x <hex>' to input a hexidecimal literal")
+					fmt.Println("")
+					continue
+				} else if len(gotten) > 3 {
+					if gotten[:3] == "-n " {
+						gotten = gotten[3:]
+						if gotten[1:] == "-" {
+							gotten = gotten[1:]
+						}
+						g, err := strconv.Atoi(gotten)
+						if err != nil {
+							//fmt.Println(err)
+							g = 0
+						}
+						if g > 255 {
+							g -= 255
+						}
+						bytes[pointer] = byte(g)
+					} else if gotten[:3] == "-b " {
+						gotten = gotten[3:]
+						if gotten[1:] == "-" {
+							gotten = gotten[1:]
+						}
+						g, err := strconv.ParseInt(gotten, 2, 5)
+						if err != nil {
+							//fmt.Println(err)
+							g = 0
+						}
+						if g > 255 {
+							g -= 255
+						}
+						bytes[pointer] = byte(g)
+					} else if gotten[:3] == "-x " {
+						gotten = gotten[3:]
+						if gotten[1:] == "-" {
+							gotten = gotten[1:]
+						}
+						g, err := strconv.ParseInt(gotten, 16, 5)
+						if err != nil {
+							//fmt.Println(err)
+							g = 0
+						}
+						if g > 255 {
+							g -= 255
+						}
+						bytes[pointer] = byte(g)
+					} else {
+						if gotten != "-s" {
+							bytes[pointer] = byte(gotten[0])
+						}
+					}
+				} else {
+					if gotten != "-s" {
+						bytes[pointer] = byte(gotten[0])
+					}
+				}
+				break
 			}
 			charindex += 1
 		case "[":

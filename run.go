@@ -27,9 +27,21 @@ func readFile(fileName string) (string, error) {
 
 func help() {
 	fmt.Println("Type 'help' to show this text.")
+	fmt.Println("type 'bfhelp' to show the instructions for Brain****")
 	fmt.Println("Type 'quit' to exit.")
 	fmt.Println("Type 'run <code>' to run some Brain**** code.")
 	fmt.Println("Type 'file <file>' to run a Brain**** file.")
+}
+
+func bfhelp() {
+	fmt.Println("'>': Increment the data pointer by one (to point to the next cell to the right).")
+	fmt.Println("'<': Decrement the data pointer by one (to point to the next cell to the left).")
+	fmt.Println("'+': Increment the byte at the data pointer by one.")
+	fmt.Println("'-': Decrement the byte at the data pointer by one.")
+	fmt.Println("'.': Output the byte at the data pointer.")
+	fmt.Println("',': Accept one byte of input, storing its value in the byte at the data pointer.")
+	fmt.Println("'[': If the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ']' command.")
+	fmt.Println("']': If the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching '[' command.")
 }
 
 // Main function
@@ -51,6 +63,8 @@ func main() {
 			return
 		case "help":
 			help()
+		case "bfhelp":
+			bfhelp()
 		default:
 			if len(command) > 4 && command[:4] == "run " {
 				code := command[4:]
