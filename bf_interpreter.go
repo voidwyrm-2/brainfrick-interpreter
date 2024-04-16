@@ -49,7 +49,7 @@ func BFInterpreter(code string) {
 			if int(bytes[pointer])-1 < 0 {
 				bytes[pointer] = 255
 			} else {
-				bytes[pointer] -= 1
+				bytes[pointer]--
 			}
 			charindex++
 		case ">":
@@ -63,7 +63,7 @@ func BFInterpreter(code string) {
 			if pointer-1 < 0 {
 				pointer = 29999
 			} else {
-				pointer -= 1
+				pointer--
 			}
 			charindex++
 		case ".":
