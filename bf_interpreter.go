@@ -21,14 +21,14 @@ func BFInterpreter(code string) {
 	var nests = 0
 	for i, c := range chars {
 		if c == "[" {
-			nests += 1
+			nests++
 			jumpstack = append(jumpstack, i)
 		} else if c == "]" && nests > 0 {
 			opening := jumpstack[len(jumpstack)-1]
 			jumps[opening] = i
 			jumps[i] = opening
 			jumpstack = jumpstack[:len(jumpstack)-1]
-			nests -= 1
+			nests--
 		}
 	}
 
@@ -42,33 +42,33 @@ func BFInterpreter(code string) {
 			if bytes[pointer]+1 > 255 {
 				bytes[pointer] = 0
 			} else {
-				bytes[pointer] += 1
+				bytes[pointer]++
 			}
-			charindex += 1
+			charindex++
 		case "-":
 			if int(bytes[pointer])-1 < 0 {
 				bytes[pointer] = 255
 			} else {
 				bytes[pointer] -= 1
 			}
-			charindex += 1
+			charindex++
 		case ">":
 			if pointer+1 > 29999 {
 				pointer = 0
 			} else {
-				pointer += 1
+				pointer++
 			}
-			charindex += 1
+			charindex++
 		case "<":
 			if pointer-1 < 0 {
 				pointer = 29999
 			} else {
 				pointer -= 1
 			}
-			charindex += 1
+			charindex++
 		case ".":
 			fmt.Printf("b%v: %v('%s')\n", pointer, int(bytes[pointer]), string(bytes[pointer]))
-			charindex += 1
+			charindex++
 		case ",":
 			fmt.Println("please input a character(or do '-h' for other options)")
 			scanner := bufio.NewScanner(os.Stdin)
@@ -137,21 +137,21 @@ func BFInterpreter(code string) {
 				}
 				break
 			}
-			charindex += 1
+			charindex++
 		case "[":
 			if bytes[pointer] == 0 {
 				charindex = jumps[charindex] + 1
 			} else {
-				charindex += 1
+				charindex++
 			}
 		case "]":
 			if bytes[pointer] != 0 {
 				charindex = jumps[charindex] + 1
 			} else {
-				charindex += 1
+				charindex++
 			}
 		default:
-			charindex += 1
+			charindex++
 		}
 	}
 }
