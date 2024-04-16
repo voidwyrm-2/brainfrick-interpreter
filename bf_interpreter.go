@@ -159,8 +159,7 @@ func BFInterpreter(code string) {
 func BFCompressor(code string) string {
 	var out string
 	for _, c := range code {
-		symbols := ".,+-<>[]"
-		if strings.Contains(symbols, string(c)) {
+		if strings.Contains(".,+-<>[]", string(c)) {
 			out += string(c)
 		}
 	}
