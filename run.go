@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 // Function to read the content of a file
@@ -25,12 +26,30 @@ func readFile(fileName string) (string, error) {
 	return content, nil
 }
 
+func writeFile(filename string, data string) error {
+	// Open the file with write permissions, create it if it doesn't exist
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Write the data to the file
+	_, err = file.WriteString(data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func help() {
 	fmt.Println("Type 'help' to show this text.")
 	fmt.Println("type 'bfhelp' to show the instructions for Brain****")
 	fmt.Println("Type 'quit' to exit.")
 	fmt.Println("Type 'run <code>' to run some Brain**** code.")
 	fmt.Println("Type 'file <file>' to run a Brain**** file.")
+	fmt.Println("Type 'compress <file>' to remove all non-action characters in a Brain**** file, result written.")
 }
 
 func bfhelp() {
@@ -82,8 +101,25 @@ func main() {
 				} else {
 					BFInterpreter(content)
 				}
+			} else if len(command) > 5 && command[:9] == "compress " {
+				fileName := command[9:]
+				//fmt.Println(fileName[len(fileName)-3:])
+				if fileName[len(fileName)-3:] != ".bf" {
+					fileName += ".bf"
+				}
+				//fmt.Println(fileName)
+				content, err := readFile(fileName)
+				if err != nil {
+					fmt.Printf("Error reading file: %v\n", err)
+				} else {
+					compressed := BFCompressor(content)
+					werr := writeFile(fileName[:3]+"_compressed.bf", compressed)
+					if werr != nil {
+						fmt.Printf("Error writing file: %v\n", werr)
+					}
+				}
 			} else {
-				fmt.Println("Command not recognized.")
+				fmt.Printf("Command '%s' not recognized.\n", strings.Split(command, " ")[0])
 			}
 		}
 	}

@@ -155,3 +155,13 @@ func BFInterpreter(code string) {
 		}
 	}
 }
+
+func BFCompressor(code string) string {
+	var out string
+	for _, c := range code {
+		if c == '.' || c == ',' || c == '+' || c == '-' || c == '<' || c == '>' || c == '[' || c == ']' {
+			out += string(c)
+		}
+	}
+	return out
+}
